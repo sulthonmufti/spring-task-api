@@ -1,0 +1,70 @@
+# =============================================================================
+# Monorepo root — all ignore rules (backend + frontend + shared)
+# Subfolder .gitignore files only point here; edit this file to change rules.
+# =============================================================================
+
+### OS / editor (repo-wide) ###
+.DS_Store
+Thumbs.db
+*.log
+
+# --- Backend: todo-backend (Spring / Maven / IDEs) ---
+todo-backend/target/
+!todo-backend/**/src/main/**/target/
+!todo-backend/**/src/test/**/target/
+
+todo-backend/.apt_generated
+todo-backend/.classpath
+todo-backend/.factorypath
+todo-backend/.project
+todo-backend/.settings/
+todo-backend/.springBeans
+todo-backend/.sts4-cache/
+todo-backend/.idea/
+todo-backend/*.iws
+todo-backend/*.iml
+todo-backend/*.ipr
+
+todo-backend/nbproject/private/
+todo-backend/nbbuild/
+todo-backend/dist/
+todo-backend/nbdist/
+todo-backend/.nb-gradle/
+todo-backend/build/
+!todo-backend/**/src/main/**/build/
+!todo-backend/**/src/test/**/build/
+
+todo-backend/.vscode/
+
+# Backend secrets & env
+todo-backend/**/application-local.properties
+todo-backend/.env
+todo-backend/**/*.class
+todo-backend/**/.env.*
+
+# --- Frontend: todo-frontend (Create React App) ---
+todo-frontend/node_modules/
+todo-frontend/.pnp
+todo-frontend/.pnp.js
+todo-frontend/coverage/
+todo-frontend/build/
+
+todo-frontend/.env
+todo-frontend/dist/
+
+todo-frontend/.env.local
+todo-frontend/.env.development.local
+todo-frontend/.env.test.local
+todo-frontend/.env.production.local
+
+todo-frontend/npm-debug.log*
+todo-frontend/yarn-debug.log*
+todo-frontend/yarn-error.log*
+
+todo-frontend/.vscode/
+
+# Optional: if you open the whole monorepo in IntelliJ at root
+.idea/
+
+# VSCode di root monorepo
+.vscode/

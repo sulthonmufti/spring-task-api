@@ -1,0 +1,5 @@
+# Salin file ini jadi application-local.properties (nama tepat), lalu isi nilai Anda.
+# Windows (PowerShell, dari folder resources): Copy-Item application-local.properties.example application-local.properties
+spring.datasource.url=jdbc:mysql://localhost:PORT/nama_database
+spring.datasource.username=your_username
+spring.datasource.password=your_password
