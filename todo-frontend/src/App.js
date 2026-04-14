@@ -30,6 +30,14 @@ function App() {
     fetchTasks(); // Refresh daftar
   };
 
+  const toggleComplete = async (task) => {
+    await axios.put(`http://localhost:8081/api/tasks/${task.id}`, {
+      ...task,
+      completed: !task.completed // Balikkan statusnya
+    });
+    fetchTasks(); // Refresh daftar agar coretan muncul
+  };
+
   return (
     <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4">
       <div className="bg-white w-full max-w-md rounded-xl shadow-xl p-6">
@@ -59,13 +67,27 @@ function App() {
           {tasks.map(task => (
             <li 
               key={task.id} 
-              className="flex items-center justify-between bg-slate-50 p-4 rounded-lg border border-slate-200 hover:shadow-sm transition-shadow"
+              className={`flex items-center justify-between p-4 rounded-lg border transition-all ${
+                task.completed ? 'bg-gray-50 border-gray-200' : 'bg-white border-slate-200 shadow-sm'
+              }`}
             >
-              <span className="text-slate-700 font-medium">{task.title}</span>
+              <div className="flex items-center gap-3">
+                <input 
+                  type="checkbox" 
+                  checked={task.completed}
+                  onChange={() => toggleComplete(task)}
+                  className="w-5 h-5 cursor-pointer accent-blue-600"
+                />
+                <span className={`font-medium transition-all ${
+                  task.completed ? 'line-through text-gray-400' : 'text-slate-700'
+                }`}>
+                  {task.title}
+                </span>
+              </div>
+              
               <button 
-                className="text-red-500 hover:bg-red-50 p-2 rounded-full transition-colors"
+                className="text-red-400 hover:text-red-600 p-2 rounded-full hover:bg-red-50 transition-colors"
                 onClick={() => deleteTask(task.id)}
-                title="Hapus tugas"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
