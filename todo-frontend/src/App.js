@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2'; // Import SweetAlert2
+import { motion, AnimatePresence } from 'framer-motion'; // Import Framer Motion
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -13,6 +14,7 @@ function App() {
 
   const fetchTasks = async () => {
     try {
+       //const response = await axios.get("http://10.66.90.225:8081/api/tasks"); //di ZeroTier pribadi, run pakai: $env:HOST="0.0.0.0"; npm start
       const response = await axios.get("http://localhost:8081/api/tasks");
       setTasks(response.data);
     } catch (error) {
@@ -27,7 +29,8 @@ function App() {
       return;
     }
 
-    await axios.post("http://localhost:8081/api/tasks", {
+    //await axios.post("http://10.66.90.225:8081/api/tasks", {
+      await axios.post("http://localhost:8081/api/tasks", {
       title: newTitle,
       completed: false
     });
@@ -46,7 +49,8 @@ function App() {
   };
 
   const toggleComplete = async (task) => {
-    await axios.put(`http://localhost:8081/api/tasks/${task.id}`, {
+    //await axios.put(`http://10.66.90.225:8081/api/tasks/${task.id}`, {
+      await axios.put(`http://localhost:8081/api/tasks/${task.id}`, {
       ...task,
       completed: !task.completed
     });
@@ -65,6 +69,7 @@ function App() {
     });
 
     if (result.isConfirmed) {
+      //await axios.delete(`http://10.66.90.225:8081/api/tasks/${id}`);
       await axios.delete(`http://localhost:8081/api/tasks/${id}`);
       fetchTasks();
       Swal.fire('Terhapus!', 'Tugas telah dibuang.', 'success');
@@ -79,6 +84,13 @@ function App() {
     if (filter === "completed") return task.completed;
     return true; // "all"
   });
+
+  //Framer Motion (Animasi Task)
+  const taskAnimation = {
+    hidden: { opacity: 0, y: 10 },
+    visible: { opacity: 1, y: 0 },
+    exit: { opacity: 0, x: -20 }
+  };
 
   return (
     <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4">
@@ -120,30 +132,42 @@ function App() {
 
         {/* LIST SECTION - MENGGUNAKAN filteredTasks.map */}
         <ul className="space-y-3">
-          {filteredTasks.map(task => (
-            <li key={task.id} className={`flex items-center justify-between p-4 rounded-lg border transition-all ${
-              task.completed ? 'bg-gray-50 border-gray-200' : 'bg-white border-slate-200 shadow-sm'
-            }`}>
-              <div className="flex items-center gap-3">
-                <input 
-                  type="checkbox" 
-                  checked={task.completed}
-                  onChange={() => toggleComplete(task)}
-                  className="w-5 h-5 cursor-pointer accent-blue-600"
-                />
-                <span className={`font-medium transition-all ${
-                  task.completed ? 'line-through text-gray-400' : 'text-slate-700'
-                }`}>
-                  {task.title}
-                </span>
-              </div>
-              <button className="text-red-400 hover:text-red-600 p-2" onClick={() => deleteTask(task.id)}>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
-              </button>
-            </li>
-          ))}
+          {/*Framer Motion (AnimatePresence membungkus daftar map) */}
+          <AnimatePresence>
+            {filteredTasks.map(task => (
+              /*Framer Motion (Mengganti <li> jadi <motion.li>) */
+              <motion.li 
+                key={task.id}
+                layout // Menghaluskan pergeseran list saat ada item dihapus
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                variants={taskAnimation}
+                className={`flex items-center justify-between p-4 rounded-lg border transition-all ${
+                  task.completed ? 'bg-gray-50 border-gray-200' : 'bg-white border-slate-200 shadow-sm'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <input 
+                    type="checkbox" 
+                    checked={task.completed}
+                    onChange={() => toggleComplete(task)}
+                    className="w-5 h-5 cursor-pointer accent-blue-600"
+                  />
+                  <span className={`font-medium transition-all ${
+                    task.completed ? 'line-through text-gray-400' : 'text-slate-700'
+                  }`}>
+                    {task.title}
+                  </span>
+                </div>
+                <button className="text-red-400 hover:text-red-600 p-2" onClick={() => deleteTask(task.id)}>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
+              </motion.li>
+            ))}
+          </AnimatePresence>
         </ul>
 
         {filteredTasks.length === 0 && (
