@@ -7,6 +7,7 @@ function App() {
   const [tasks, setTasks] = useState([]);
   const [newTitle, setNewTitle] = useState("");
   const [filter, setFilter] = useState("all"); // State untuk filter
+  const [searchTerm, setSearchTerm] = useState(""); //SEARCH: State untuk menampung teks pencarian
 
   useEffect(() => {
     fetchTasks();
@@ -76,13 +77,19 @@ function App() {
     }
   };
 
-  // 2. LOGIKA FILTER & COUNTER
+  // 2. LOGIKA FILTER & COUNTER (filteredTasks)
   const pendingTasks = tasks.filter(t => !t.completed).length;
 
   const filteredTasks = tasks.filter(task => {
-    if (filter === "active") return !task.completed;
-    if (filter === "completed") return task.completed;
-    return true; // "all"
+    // Cek apakah tugas sesuai dengan filter (All/Active/Completed)
+    const matchesFilter = 
+      filter === "active" ? !task.completed :
+      filter === "completed" ? task.completed : true;
+
+    // Cek apakah judul tugas mengandung teks dari searchTerm
+    const matchesSearch = task.title.toLowerCase().includes(searchTerm.toLowerCase());
+
+    return matchesFilter && matchesSearch;
   });
 
   //Framer Motion (Animasi Task)
@@ -113,6 +120,17 @@ function App() {
           <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition" onClick={addTask}>
             Add
           </button>
+        </div>
+
+        {/*SEARCH: Input UI Pencarian */}
+        <div className="mb-6">
+          <input 
+            type="text"
+            className="w-full border border-slate-300 rounded-lg px-4 py-2 bg-slate-50 focus:ring-2 focus:ring-blue-400 outline-none text-sm italic"
+            placeholder="Cari tugas Anda di sini..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
         </div>
 
         {/* 3. TOMBOL FILTER DI UI */}
