@@ -1,5 +1,6 @@
 package com.learning.todo_app.entity;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.persistence.*;
 import lombok.Data;
 
