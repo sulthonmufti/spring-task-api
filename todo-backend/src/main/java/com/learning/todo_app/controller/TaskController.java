@@ -10,11 +10,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/tasks")
-//@CrossOrigin(origins = "*") //agar semua domain bisa akses backend ini
+// @CrossOrigin(origins = "*") //agar semua domain bisa akses backend ini
 @CrossOrigin(origins = {
-    "http://localhost:3000", 
-    "http://10.66.90.225:3000" //domain lain yang akan diizinkan (di ZeroTier pribadi)
-}) //agar react nanti bisa akses backend ini
+        "http://localhost:3000",
+        "http://10.66.90.225:3000" // domain lain yang akan diizinkan (di ZeroTier pribadi)
+}) // agar react nanti bisa akses backend ini
 public class TaskController {
 
     @Autowired
